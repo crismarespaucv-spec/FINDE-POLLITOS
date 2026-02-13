@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <title>Manchester Trip 2026</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Manchester Trip">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' fill='url(%23grad)' rx='40'/%3E%3Ctext x='96' y='120' font-size='80' text-anchor='middle' fill='white'%3E✈️%3C/text%3E%3C/svg%3E">
+    
+    <!-- Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #e94560;
+            --success: #06a77d;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-dates {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .quick-stats {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 0.5rem;
+        }
+
+        .quick-stats::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stat-chip {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Content Container */
+        .content {
+            padding: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            padding-bottom: 1.5rem;
+            border-left: 2px solid var(--border);
+        }
+
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+
+        .activity-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid var(--warning);
+            color: #856404;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid var(--success);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-left: 4px solid var(--danger);
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #e7f3ff;
+            border-left: 4px solid var(--primary);
+            color: #004085;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Restaurant Cards */
+        .restaurant-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .restaurant-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .restaurant-type {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .restaurant-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-right: 0.3rem;
+            margin-top: 0.3rem;
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .badge-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Transport Options */
+        .transport-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--border);
+        }
+
+        .transport-card.recommended {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .transport-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .transport-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .transport-tag {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .transport-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .transport-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .accordion-header {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .accordion-header:active {
+            transform: scale(0.98);
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .accordion-body {
+            padding: 1rem;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* Checklist */
+        .checklist-item {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            flex-shrink: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--primary);
+        }
+
+        .checklist-item.checked .checklist-text {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .checklist-text {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        /* Quick Action Button */
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .info-box {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .info-box-content {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 1.5rem 0 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Expandable Card */
+        .expandable-card {
+            margin-bottom: 0.75rem;
+        }
+
+        .expandable-header {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .expandable-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .expandable-card.expanded .expandable-content {
+            max-height: 3000px;
+        }
+
+        .expandable-body {
+            background: white;
+            padding: 0 1rem 1rem;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Utility Classes */
+        .text-primary { color: var(--primary); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .text-sm { font-size: 0.85rem; }
+        .text-xs { font-size: 0.75rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+
+        /* Pull to Refresh Indicator */
+        .pull-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+            z-index: 99;
+        }
+
+        .pull-indicator.active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- App Header -->
+    <div class="app-header">
+        <div class="header-top">
+            <div>
+                <div class="header-title">Manchester Trip</div>
+                <div class="header-dates">20-22 Feb 2026 • Gemma & Cris</div>
+            </div>
+            <div style="font-size: 2rem;">✈️</div>
+        </div>
+        <div class="quick-stats">
+            <div class="stat-chip">🎵 Florence Concert</div>
+            <div class="stat-chip">🎸 Beatles Tour</div>
+            <div class="stat-chip">🏛️ Manchester History</div>
+            <div class="stat-chip">🍽️ Gluten-Free Safe</div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- TODAY SECTION -->
+        <section id="today" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📅</div>
+                    <div class="card-title">Hoy - Viernes 20 Feb</div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <div class="alert-title">✈️ Día de Llegada + Concierto</div>
+                    Llegada 12:30h → Check-in → Comida → FLORENCE + THE MACHINE 🎵
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">12:30 - 13:15</span>
+                    <div class="activity-title">✈️ Llegada Aeropuerto MAN</div>
+                    <div class="activity-desc">
+                        Seguir señales "Trains" → Skylink (pasillos elevados) → "The Station" (10 min)
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">13:20 - 13:40</span>
+                    <div class="activity-title">🚂 Tren al Centro</div>
+                    <div class="activity-desc">
+                        Tren directo → Manchester Piccadilly<br>
+                        ⏱️ 15-20 min | 💰 £4-£6<br>
+                        <strong class="text-success">✓ OPCIÓN RECOMENDADA</strong>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">13:45 - 14:15</span>
+                    <div class="activity-title">🏨 Holiday Inn Check-in</div>
+                    <div class="activity-desc">
+                        25 Aytoun Street (2 min de la estación)<br>
+                        Si habitación no lista → dejar equipaje en consigna
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">14:30 - 16:00</span>
+                    <div class="activity-title">🍜 Comida Northern Quarter</div>
+                    <div class="activity-desc">
+                        <strong>Sweet Mandarin</strong> o <strong>Bundobust</strong><br>
+                        <span class="badge badge-success">✓ CELÍACO SEGURO</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">16:00 - 17:15</span>
+                    <div class="activity-title">🛏️ Descanso Hotel</div>
+                    <div class="activity-desc">Instalarse, ducharse, recargar energías</div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">17:15 - 17:45</span>
+                    <div class="activity-title">🚊 Metrolink → Co-op Live</div>
+                    <div class="activity-desc">
+                        Piccadilly → Etihad Campus<br>
+                        Frecuencia: cada 6 min<br>
+                        💡 Puede estar incluido en entrada
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">18:00 - 19:30</span>
+                    <div class="activity-title">🏟️ Llegada Co-op Live</div>
+                    <div class="activity-desc">
+                        ⚠️ Bolsos máx. A4<br>
+                        💳 100% CASHLESS (solo tarjetas)<br>
+                        Merchandising + bebidas
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">19:30 - 22:45</span>
+                    <div class="activity-title">🎤 CONCIERTO</div>
+                    <div class="activity-desc">
+                        <strong>Florence + The Machine</strong><br>
+                        Telonera: Paris Paloma (19:30h)<br>
+                        ¡A disfrutar! 🎶✨
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time-badge">23:00 - 23:30</span>
+                    <div class="activity-title">🚶‍♀️ Vuelta Caminando</div>
+                    <div class="activity-desc">
+                        <strong class="text-success">⭐ Caminar por CityLink</strong><br>
+                        NO tranvía (colas 45+ min)<br>
+                        Ruta peatonal segura 25-30 min
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <div class="alert-title">⚠️ Recordatorios Hoy</div>
+                • NO comer en Co-op Live (riesgo celíaco)<br>
+                • Llevar tarjeta contactless (cashless)<br>
+                • Bolso pequeño (máx. A4)<br>
+                • Cargador portátil<br>
+                • Vuelta: CAMINAR > tranvía
+            </div>
+        </section>
+
+        <!-- ITINERARY SECTION -->
+        <section id="itinerary" class="section">
+            <div class="tabs">
+                <button class="tab active" onclick="switchDay('friday', this)">Viernes</button>
+                <button class="tab" onclick="switchDay('saturday', this)">Sábado</button>
+                <button class="tab" onclick="switchDay('sunday', this)">Domingo</button>
+            </div>
+
+            <!-- Friday Tab -->
+            <div id="friday-tab" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🎵</div>
+                        <div class="card-title">Viernes 20 - Florence</div>
+                    </div>
+                    <div class="alert alert-info">
+                        Ver pestaña "Hoy" para timeline completo del viernes
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saturday Tab -->
+            <div id="saturday-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🎸</div>
+                        <div class="card-title">Sábado 21 - Liverpool Beatles</div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">07:15 - 08:15</span>
+                        <div class="activity-title">☕ Desayuno</div>
+                        <div class="activity-desc">Federal Cafe / Hotel / Moose Coffee</div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">08:30 - 09:25</span>
+                        <div class="activity-title">🚂 Tren a Liverpool</div>
+                        <div class="activity-desc">
+                            Piccadilly → Lime Street<br>
+                            ⏱️ 40-55 min | 💰 £3.86-£8.50<br>
+                            <strong class="text-danger">⚠️ COMPRAR ADVANCE</strong>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">10:00 - 12:00</span>
+                        <div class="activity-title">🎵 Beatles Story Museum</div>
+                        <div class="activity-desc">
+                            Royal Albert Dock | £20.00<br>
+                            Audioguía en español incluida<br>
+                            <strong class="text-danger">⚠️ Reserva online con timeslot</strong>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">12:15 - 13:30</span>
+                        <div class="activity-title">🍽️ Almuerzo Albert Dock</div>
+                        <div class="activity-desc">
+                            <strong>Maray</strong> (levantina)<br>
+                            <span class="badge badge-success">CELÍACO SEGURO</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">14:00 - 16:00</span>
+                        <div class="activity-title">🚌 Magical Mystery Tour</div>
+                        <div class="activity-desc">
+                            £21.95 | Check-in 13:30h<br>
+                            Penny Lane + Strawberry Field 📸<br>
+                            <strong class="text-danger">⚠️ Reserva online</strong>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">16:00 - 18:00</span>
+                        <div class="activity-title">🎸 The Cavern Club</div>
+                        <div class="activity-desc">
+                            Mathew Street (bus os deja aquí)<br>
+                            <strong class="text-success">✓ Entrada GRATIS con ticket tour</strong><br>
+                            Música en vivo | 100% cashless
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">18:15 - 19:45</span>
+                        <div class="activity-title">🍔 Cena Liverpool</div>
+                        <div class="activity-desc">
+                            <strong>Honest Burgers</strong> (Bold St)<br>
+                            <span class="badge badge-success">100% SIN GLUTEN</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">20:00 - 21:00</span>
+                        <div class="activity-title">🚂 Vuelta Manchester</div>
+                        <div class="activity-desc">Lime Street → Piccadilly</div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <div class="alert-title">✨ Ventajas del Día</div>
+                    • Entrada gratis Cavern Club con tour<br>
+                    • Bus os deja en Mathew Street<br>
+                    • Todo cerca en Albert Dock<br>
+                    • Billetes Advance = 50% ahorro
+                </div>
+            </div>
+
+            <!-- Sunday Tab -->
+            <div id="sunday-tab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🏛️</div>
+                        <div class="card-title">Domingo 22 - Manchester & Vuelta</div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">08:45 - 09:45</span>
+                        <div class="activity-title">☕ Desayuno + Check-out</div>
+                        <div class="activity-desc">
+                            Federal Cafe / Hotel<br>
+                            Dejar equipaje en consigna hotel
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">10:30 - 12:45</span>
+                        <div class="activity-title">🎭 Free Tour Manchester</div>
+                        <div class="activity-desc">
+                            Inicio: Central Library (St Peter's Sq)<br>
+                            Duración: 2h 15min<br>
+                            Propina: £10-15/persona<br>
+                            <strong class="text-danger">⚠️ Reserva Eventbrite</strong>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">12:50 - 14:00</span>
+                        <div class="activity-title">🍜 Almuerzo Despedida</div>
+                        <div class="activity-desc">
+                            <strong>Pho</strong> (Corn Exchange)<br>
+                            Vietnamita - 98% sin gluten<br>
+                            <span class="badge badge-success">AUDITADO CELÍACO</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">14:15 - 14:30</span>
+                        <div class="activity-title">🎒 Recoger Equipaje</div>
+                        <div class="activity-desc">Consigna Holiday Inn (15 min caminando)</div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">14:40 - 15:00</span>
+                        <div class="activity-title">🚂 Tren Aeropuerto</div>
+                        <div class="activity-desc">
+                            Piccadilly → Airport<br>
+                            ⏱️ 15-20 min | Llegar 15:00h<br>
+                            90 min antes del vuelo ✓
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="time-badge">16:30</span>
+                        <div class="activity-title">✈️ Despegue</div>
+                        <div class="activity-desc">
+                            Vuelos a Madrid y Valencia<br>
+                            ¡Fin del viaje! 🎉
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOD SECTION -->
+        <section id="food" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🍽️</div>
+                    <div class="card-title">Restaurantes Seguros</div>
+                </div>
+
+                <div class="alert alert-success">
+                    <div class="alert-title">🛡️ Protocolo Celiaquía</div>
+                    SIEMPRE decir al llegar:<br>
+                    <strong>"Strictly Coeliac Disease"</strong>
+                </div>
+
+                <div class="section-header">🏙️ Manchester</div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Pho</div>
+                            <div class="restaurant-type">Vietnamita</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-success">⭐ TOP</span>
+                            <span class="badge badge-primary">98% SIN GLUTEN</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Corn Exchange<br>
+                                <strong>Por qué:</strong> 98% del menú naturalmente sin gluten. Acreditación Coeliac UK 9 años. Caldos, tallarines de arroz, carnes, curris.<br>
+                                <strong>Extra:</strong> Cervezas sin gluten
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Sweet Mandarin</div>
+                            <div class="restaurant-type">China</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-success">COCINA SEGREGADA</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Northern Quarter<br>
+                                <strong>Seguridad:</strong> Cocina física separada con freidoras independientes<br>
+                                Precio refleja exclusividad (£££)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Purezza</div>
+                            <div class="restaurant-type">Pizzería</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-primary">MASA ARTESANAL</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Northern Quarter<br>
+                                <strong>Diferenciador:</strong> Masa sin gluten fermentada (no prefabricada). Base vegana.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Federal Cafe Bar</div>
+                            <div class="restaurant-type">Brunch</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-success">DESAYUNOS</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Northern Quarter / Deansgate<br>
+                                <strong>Ideal:</strong> Desayuno y brunch<br>
+                                Pan artesanal sin gluten, huevos, aguacate, salmón
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Bundobust</div>
+                            <div class="restaurant-type">India Vegetariana</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-primary">HARINA GARBANZOS</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Piccadilly (cerca hotel)<br>
+                                Comida callejera india + cervecería. Bhajis, pakoras, bhel puri mayormente sin gluten.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">🎸 Liverpool</div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Honest Burgers</div>
+                            <div class="restaurant-type">Hamburguesas</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-success">⭐ 100% SIN GLUTEN</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Bold Street<br>
+                                <strong>PERFECTO:</strong> Todo el menú libre de gluten - hamburguesas, alitas, aros cebolla, patatas. Freidoras blindadas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Maray</div>
+                            <div class="restaurant-type">Levantina</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-primary">PERSONAL EXPERTO</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Albert Dock (junto museo)<br>
+                                Mezze para compartir, pan plano sin gluten, personal modélico en alérgenos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Mowgli Street Food</div>
+                            <div class="restaurant-type">India Callejera</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-success">MAYORÍA NATURAL GF</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Water St / Bold St<br>
+                                Curris caseros, paneer, arroces, dahl. Mayor parte sin harinas de trigo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expandable-card">
+                    <div class="expandable-header" onclick="toggleExpand(this)">
+                        <div>
+                            <div class="restaurant-name">Cosy Club</div>
+                            <div class="restaurant-type">Británica</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="expandable-body">
+                            <span class="badge badge-primary">MENÚ ESPECÍFICO</span>
+                            <p class="restaurant-desc">
+                                <strong>Ubicación:</strong> Liverpool ONE<br>
+                                Carta separada para celíacos. Desayunos ingleses, filetes, postres seguros.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-danger mt-2">
+                    <div class="alert-title">❌ Dónde NO Comer</div>
+                    <strong>Co-op Live:</strong> Alto riesgo contaminación<br>
+                    <strong>Cavern Club:</strong> NO comida (SÍ bebidas embotelladas)
+                </div>
+            </div>
+        </section>
+
+        <!-- TRANSPORT SECTION -->
+        <section id="transport" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🚆</div>
+                    <div class="card-title">Transporte</div>
+                </div>
+
+                <div class="section-header">✈️ Aeropuerto → Centro</div>
+
+                <div class="transport-card recommended">
+                    <div class="transport-header">
+                        <div class="transport-name">🚂 Tren (RECOMENDADO)</div>
+                        <span class="transport-tag" style="background: var(--success); color: white;">ÓPTIMO</span>
+                    </div>
+                    <div class="transport-details">
+                        <span class="transport-detail">⏱️ 15-20 min</span>
+                        <span class="transport-detail">💰 £2-£6</span>
+                    </div>
+                </div>
+
+                <div class="transport-card">
+                    <div class="transport-header">
+                        <div class="transport-name">🚊 Tranvía</div>
+                        <span class="transport-tag" style="background: var(--warning); color: white;">LENTO</span>
+                    </div>
+                    <div class="transport-details">
+                        <span class="transport-detail">⏱️ 55 min</span>
+                        <span class="transport-detail">💰 ~£3</span>
+                    </div>
+                </div>
+
+                <div class="transport-card">
+                    <div class="transport-header">
+                        <div class="transport-name">🚗 Taxi/Uber</div>
+                        <span class="transport-tag" style="background: var(--danger); color: white;">CARO</span>
+                    </div>
+                    <div class="transport-details">
+                        <span class="transport-detail">⏱️ 16-25 min</span>
+                        <span class="transport-detail">💰 £25-£32</span>
+                    </div>
+                </div>
+
+                <div class="section-header">🎵 Hotel → Co-op Live</div>
+
+                <div class="transport-card recommended">
+                    <div class="transport-header">
+                        <div class="transport-name">🚊 Metrolink (IDA)</div>
+                        <span class="transport-tag" style="background: var(--success); color: white;">MEJOR</span>
+                    </div>
+                    <div class="transport-details">
+                        <span class="transport-detail">⏱️ 10-15 min</span>
+                        <span class="transport-detail">⚡ Cada 6 min</span>
+                    </div>
+                    <div class="text-xs mt-1" style="color: var(--text-secondary);">
+                        Piccadilly → Etihad Campus<br>
+                        💡 Puede estar incluido en entrada
+                    </div>
+                </div>
+
+                <div class="transport-card recommended">
+                    <div class="transport-header">
+                        <div class="transport-name">🚶‍♀️ CityLink (VUELTA)</div>
+                        <span class="transport-tag" style="background: var(--success); color: white;">RECOMENDADO</span>
+                    </div>
+                    <div class="transport-details">
+                        <span class="transport-detail">⏱️ 25-30 min</span>
+                        <span class="transport-detail">💰 GRATIS</span>
+                    </div>
+                    <div class="text-xs mt-1" style="color: var(--text-secondary);">
+                        Evita colas 45+ min en tranvía<br>
+                        Ruta peatonal segura e iluminada
+                    </div>
+                </div>
+
+                <div class="section-header">🚂 Manchester ↔ Liverpool</div>
+
+                <div class="transport-card recommended">
+                    <div class="transport-header">
+                        <div class="transport-name">🚄 Tren Directo</div>
+                    </div>
+                    <div class="transport-details">
+                        <span class="transport-detail">⏱️ 38-55 min</span>
+                        <span class="transport-detail">💰 £3.86-£8.50</span>
+                    </div>
+                </div>
+
+                <div class="alert alert-danger">
+                    <div class="alert-title">⚠️ CRÍTICO - Billetes Advance</div>
+                    NO comprar en máquinas el día del viaje<br>
+                    <strong class="text-success">✓ Comprar AHORA con antelación</strong><br>
+                    Apps: Northern Railway / TransPennine Express<br>
+                    Ahorro: 50-60%
+                </div>
+
+                <div class="info-box mt-2">
+                    <div class="info-box-title">🎯 Horarios Sugeridos</div>
+                    <div class="info-box-content">
+                        <strong>IDA Sábado:</strong> 08:30-09:00<br>
+                        <strong>VUELTA Sábado:</strong> 19:30-20:30
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📍</div>
+                    <div class="card-title">Ubicaciones Clave</div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="info-box-title">🏨 Holiday Inn</div>
+                        <div class="info-box-content">
+                            25 Aytoun Street<br>
+                            M1 3DT<br>
+                            A 2 min Piccadilly
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">🏟️ Co-op Live</div>
+                        <div class="info-box-content">
+                            1 Sportcity Way<br>
+                            M11 3DL<br>
+                            Etihad Campus
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">🎸 Beatles Story</div>
+                        <div class="info-box-content">
+                            Royal Albert Dock<br>
+                            Liverpool<br>
+                            20 min desde Lime St
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">🎵 Cavern Club</div>
+                        <div class="info-box-content">
+                            Mathew Street<br>
+                            L2 6RE<br>
+                            Centro Liverpool
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHECKLIST SECTION -->
+        <section id="checklist" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">✅</div>
+                    <div class="card-title">Checklist Pre-Viaje</div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Billetes tren Manchester-Liverpool</strong><br>
+                        <span class="text-xs text-secondary">Apps: Northern o TransPennine Express | Advance tickets</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Beatles Story Museum (£20)</strong><br>
+                        <span class="text-xs text-secondary">beatlesstory.com | Reserva con timeslot</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Magical Mystery Tour (£21.95)</strong><br>
+                        <span class="text-xs text-secondary">cavernclub.com | Reserva online</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Free Tour Manchester</strong><br>
+                        <span class="text-xs text-secondary">Eventbrite / simanchester.com</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Verificar si Metrolink incluido en concierto</strong><br>
+                        <span class="text-xs text-secondary">Revisar email Ticketmaster</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Descargar apps transporte</strong><br>
+                        <span class="text-xs text-secondary">Northern Railway, TransPennine Express, Uber</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Tarjetas contactless activadas</strong><br>
+                        <span class="text-xs text-secondary">Todo es cashless (Co-op Live, Cavern Club)</span>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Cargador portátil móvil</strong>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Paraguas + ropa impermeable</strong>
+                    </div>
+                </div>
+
+                <div class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">
+                        <strong>Calzado cómodo impermeable</strong><br>
+                        <span class="text-xs text-secondary">Mucho caminar</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💡</div>
+                    <div class="card-title">Info Práctica</div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>💳 Dinero y Pagos</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <strong>100% Cashless:</strong><br>
+                            • Co-op Live Arena<br>
+                            • The Cavern Club<br><br>
+                            <strong>Coste estimado pp:</strong><br>
+                            Transporte: £30-40<br>
+                            Entradas: £42<br>
+                            Comidas: £60-80<br>
+                            Free Tour: £10-15<br>
+                            <strong>Total: £150-180</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🌦️ Clima Febrero</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <strong>Temperatura:</strong> 4-9°C<br>
+                            <strong>Lluvia:</strong> Probabilidad alta<br><br>
+                            <strong>Llevar:</strong><br>
+                            • Abrigo impermeable<br>
+                            • Paraguas compacto<br>
+                            • Capas de ropa<br>
+                            • Calzado impermeable<br>
+                            • Bufanda y guantes
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🚨 Emergencias</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <strong>Emergencias UK:</strong> 999<br>
+                            <strong>NHS (salud):</strong> 111<br>
+                            <strong>Holiday Inn:</strong> +44 161 272 5569<br><br>
+                            <strong>Farmacias 24h:</strong><br>
+                            Boots Pharmacy - Piccadilly Station
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>📱 Apps Esenciales</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <strong>Transporte:</strong><br>
+                            Northern Railway, TransPennine Express, Uber<br><br>
+                            <strong>Mapas:</strong><br>
+                            Google Maps, Citymapper<br><br>
+                            <strong>Restaurantes:</strong><br>
+                            Find Me Gluten Free<br><br>
+                            <strong>Entradas:</strong><br>
+                            Ticketmaster, confirmaciones email
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🎒 Qué Llevar Concierto</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            • Bolso pequeño (máx. A4)<br>
+                            • DNI/Pasaporte<br>
+                            • Tarjeta contactless<br>
+                            • Móvil cargado<br>
+                            • Cargador portátil<br>
+                            • Botella agua vacía<br>
+                            • Tapones oídos (opcional)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎉</div>
+                    <h3 style="font-weight: 800; margin-bottom: 0.5rem; color: white;">¡Todo Listo!</h3>
+                    <p style="font-size: 0.9rem; opacity: 0.95;">
+                        Florence + The Machine, The Beatles, historia de Manchester, y comida segura. ¡A disfrutar el viaje!
+                    </p>
+                    <p style="font-size: 0.85rem; margin-top: 1rem; font-weight: 600;">
+                        Gemma & Cris • 20-22 Feb 2026 🎵✈️
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="showSection('today', this)">
+            <div class="nav-icon">📅</div>
+            <div>Hoy</div>
+        </button>
+        <button class="nav-item" onclick="showSection('itinerary', this)">
+            <div class="nav-icon">🗓️</div>
+            <div>Itinerario</div>
+        </button>
+        <button class="nav-item" onclick="showSection('food', this)">
+            <div class="nav-icon">🍽️</div>
+            <div>Comida</div>
+        </button>
+        <button class="nav-item" onclick="showSection('transport', this)">
+            <div class="nav-icon">🚆</div>
+            <div>Transporte</div>
+        </button>
+        <button class="nav-item" onclick="showSection('checklist', this)">
+            <div class="nav-icon">✅</div>
+            <div>Info</div>
+        </button>
+    </nav>
+
+    <script>
+        // Section Navigation
+        function showSection(sectionId, element) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active to clicked nav item
+            if (element) {
+                element.classList.add('active');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Day Tabs
+        function switchDay(day, element) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active from all tab buttons
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(day + '-tab').classList.add('active');
+
+            // Add active to clicked tab button
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        // Accordion Toggle
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const wasActive = item.classList.contains('active');
+
+            // Close all accordions
+            document.querySelectorAll('.accordion-item').forEach(accordion => {
+                accordion.classList.remove('active');
+            });
+
+            // Open clicked accordion if it wasn't active
+            if (!wasActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Expandable Cards
+        function toggleExpand(header) {
+            const card = header.parentElement;
+            card.classList.toggle('expanded');
+        }
+
+        // Checklist Toggle
+        function toggleCheck(item) {
+            item.classList.toggle('checked');
+            
+            // Save state to localStorage
+            const checklistState = [];
+            document.querySelectorAll('.checklist-item').forEach((item, index) => {
+                checklistState.push(item.classList.contains('checked'));
+            });
+            localStorage.setItem('checklistState', JSON.stringify(checklistState));
+        }
+
+        // Load checklist state
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedState = localStorage.getItem('checklistState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                document.querySelectorAll('.checklist-item').forEach((item, index) => {
+                    if (state[index]) {
+                        item.classList.add('checked');
+                    }
+                });
+            }
+        });
+
+        // Add touch feedback
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add ripple effect to buttons
+            document.querySelectorAll('.action-btn, .nav-item, .tab').forEach(button => {
+                button.addEventListener('touchstart', function(e) {
+                    this.style.opacity = '0.7';
+                });
+                button.addEventListener('touchend', function(e) {
+                    this.style.opacity = '1';
+                });
+            });
+        });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Service Worker for offline capability (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registered: ', registration);
+                    })
+                    .catch((error) => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+
+        // Install prompt
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.className = 'action-btn';
+        installButton.innerHTML = '📱 Instalar App en tu Móvil';
+        installButton.style.display = 'none';
+        installButton.style.position = 'fixed';
+        installButton.style.bottom = '90px';
+        installButton.style.left = '1rem';
+        installButton.style.right = '1rem';
+        installButton.style.zIndex = '999';
+        document.body.appendChild(installButton);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Update UI to show install button
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                // Clear the deferredPrompt
+                deferredPrompt = null;
+                // Hide the install button
+                installButton.style.display = 'none';
+            }
+        });
+
+        // Hide install button when app is installed
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installButton.style.display = 'none';
+            deferredPrompt = null;
+        });
+    </script>
+</body>
+</html>
